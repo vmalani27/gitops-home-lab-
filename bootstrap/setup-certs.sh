@@ -18,25 +18,19 @@ mkcert -install
 log_info "Generating wildcard certificate for *.links.test and links.test..."
 mkcert -cert-file "${CERT_DIR}/tls.crt" -key-file "${CERT_DIR}/tls.key" "*.links.test" "links.test" "api.links.test" "argo.links.test"
 
-# Ensure target namespaces exist
-log_info "Ensuring namespaces 'infra' and 'url-shortener' exist..."
-kubectl create namespace infra --dry-run=client -o yaml | kubectl apply -f -
-kubectl create namespace url-shortener --dry-run=client -o yaml | kubectl apply -f -
+# Target namespaces where Ingress resources or TLS termination occur
+TARGET_NAMESPACES=("ingress-nginx" "argocd" "url-shortener")
 
-# Create or replace secret in infra namespace
-log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace 'infra'..."
-kubectl create secret tls wildcard-links-test-tls \
-  --cert="${CERT_DIR}/tls.crt" \
-  --key="${CERT_DIR}/tls.key" \
-  --namespace=infra \
-  --dry-run=client -o yaml | kubectl apply -f -
+for ns in "${TARGET_NAMESPACES[@]}"; do
+    log_info "Ensuring namespace '${ns}' exists..."
+    kubectl create namespace "${ns}" --dry-run=client -o yaml | kubectl apply -f -
 
-# Create or replace secret in url-shortener namespace
-log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace 'url-shortener'..."
-kubectl create secret tls wildcard-links-test-tls \
-  --cert="${CERT_DIR}/tls.crt" \
-  --key="${CERT_DIR}/tls.key" \
-  --namespace=url-shortener \
-  --dry-run=client -o yaml | kubectl apply -f -
+    log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace '${ns}'..."
+    kubectl create secret tls wildcard-links-test-tls \
+      --cert="${CERT_DIR}/tls.crt" \
+      --key="${CERT_DIR}/tls.key" \
+      --namespace="${ns}" \
+      --dry-run=client -o yaml | kubectl apply -f -
+done
 
-log_info "Wildcard TLS certificates successfully provisioned into 'infra' and 'url-shortener' namespaces."
+log_info "Wildcard TLS certificates successfully provisioned into: ${TARGET_NAMESPACES[*]}."
