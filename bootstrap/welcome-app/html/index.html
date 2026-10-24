@@ -1,249 +1,433 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Local DevOps Engineering Lab</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Local Lab</title>
+
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(26, 34, 53, 0.7);
-      --border: #233554;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --green: #4ade80;
-      --purple: #c084fc;
+      color-scheme: light;
+      --page: #f7f7f3;
+      --paper: #fffefa;
+      --ink: #252821;
+      --muted: #666b61;
+      --line: #dedfd6;
+      --accent: #446d55;
+      --code-bg: #eeefe8;
+      --width: 780px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--page);
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-underline-offset: 3px;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 254, 250, .72);
+    }
+
+    .topbar-inner,
+    main,
+    footer {
+      width: min(var(--width), calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .topbar-inner {
+      min-height: 62px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 2.5rem 1rem;
-      line-height: 1.6;
+      justify-content: space-between;
+      gap: 20px;
     }
-    .header {
-      text-align: center;
-      max-width: 780px;
-      margin-bottom: 2.5rem;
+
+    .wordmark {
+      font-weight: 650;
+      letter-spacing: -.02em;
     }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      background: rgba(74, 222, 128, 0.1);
-      color: var(--green);
-      font-size: 0.85rem;
+
+    .topbar-note {
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    main {
+      padding: 62px 0 12px;
+    }
+
+    .intro {
+      max-width: 690px;
+    }
+
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--accent);
+      font-size: .82rem;
       font-weight: 600;
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      margin-bottom: 1rem;
+      letter-spacing: .025em;
     }
-    .pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 10px var(--green);
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
     }
+
     h1 {
-      font-size: 2.25rem;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      margin-bottom: 0.75rem;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      max-width: 650px;
+      margin-bottom: 18px;
+      font-size: clamp(2.25rem, 6vw, 3.15rem);
+      line-height: 1.12;
+      letter-spacing: -.055em;
+      font-weight: 620;
     }
-    p.subtitle {
-      color: var(--text-muted);
-      font-size: 1.1rem;
+
+    .lead {
+      max-width: 660px;
+      margin-bottom: 14px;
+      color: #454a42;
+      font-size: 1.08rem;
+      line-height: 1.8;
     }
-    .container {
-      max-width: 900px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+
+    .aside-line {
+      max-width: 660px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: .96rem;
     }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+    section {
+      margin-top: 43px;
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
     }
-    .card h2 {
-      font-size: 1.25rem;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+
+    h2 {
+      margin-bottom: 9px;
+      font-size: 1.14rem;
+      font-weight: 650;
+      letter-spacing: -.02em;
     }
-    .stats-grid {
+
+    .section-intro {
+      max-width: 670px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .details {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 34px;
+      margin: 22px 0 0;
     }
-    .stat-item {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border);
-      padding: 1rem;
-      border-radius: 8px;
+
+    .details div {
+      min-width: 0;
     }
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+
+    dt {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: .85rem;
     }
-    .stat-value {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-top: 0.25rem;
+
+    dd {
+      margin: 0;
+      font-weight: 520;
     }
-    .roadmap-list {
-      list-style: none;
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .88em;
     }
-    .roadmap-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 0.75rem;
-      background: rgba(15, 23, 42, 0.4);
-      border-radius: 8px;
-      border-left: 3px solid var(--border);
-    }
-    .roadmap-item.active {
-      border-left-color: var(--green);
-    }
-    .roadmap-item.upcoming {
-      border-left-color: var(--purple);
-    }
-    .step-num {
-      background: #1e293b;
-      color: var(--accent);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 2px 8px;
+
+    p code,
+    dd code {
+      padding: .13em .35em;
+      background: var(--code-bg);
       border-radius: 4px;
     }
-    .code-box {
-      background: #070a12;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.9rem;
-      color: #38bdf8;
-      overflow-x: auto;
+
+    .next-list {
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
     }
+
+    .next-list li {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 13px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .next-list li:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .number {
+      padding-top: 2px;
+      color: var(--muted);
+      font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .step-title {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 620;
+    }
+
+    .step-copy {
+      display: block;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .commands {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .command {
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .command p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: .91rem;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      color: var(--ink);
+      line-height: 1.6;
+      white-space: pre;
+    }
+
     footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      margin-top: 48px;
+      padding: 18px 0 30px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    @media (max-width: 560px) {
+      .topbar-inner,
+      main,
+      footer {
+        width: calc(100% - 32px);
+      }
+
+      main {
+        padding-top: 42px;
+      }
+
+      .details {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 16px;
+      }
+
+      section {
+        margin-top: 34px;
+        padding-top: 21px;
+      }
+
+      .topbar-note {
+        font-size: .8rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .details {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-note {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="header">
-    <div class="badge">
-      <div class="pulse"></div>
-      Cluster Online & Secure
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="topbar-note">Minikube · Kubernetes v1.37</span>
     </div>
-    <h1>Welcome to Your Local DevOps Engineering Lab</h1>
-    <p class="subtitle">A hardened local Kubernetes playground powered by Minikube, Ingress-NGINX, and mkcert wildcard TLS.</p>
   </div>
 
-  <div class="container">
-    <div class="card">
-      <h2>🎯 What is this Cluster?</h2>
-      <p>
-        You are currently accessing this cluster securely over HTTPS at <strong>https://links.test</strong>.
-        This lab is structured to replicate production cloud workflows inside your local machine using strict resource constraints, trusted TLS certificates, and a GitOps-first pattern.
+  <main>
+    <header class="intro">
+      <p class="eyebrow">A small place to build and break things</p>
+
+      <h1>Hey, welcome to the lab.</h1>
+
+      <p class="lead">
+        This is my little Kubernetes setup. I’m using it to learn the
+        whole trip from code to a running service: build it, deploy it,
+        route traffic to it, and figure out what happens when something
+        goes wrong. It all stays on my machine for now, so I can try
+        things without needing a cloud environment.
       </p>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-label">Host Target</div>
-          <div class="stat-value">Windows 11 + WSL2</div>
+
+      <p class="aside-line">
+        You’re looking at the temporary default landing page.
+        The plan is to replace this placeholder once the first
+        production service is ready.
+      </p>
+    </header>
+
+    <section aria-labelledby="working-heading">
+      <h2 id="working-heading">A few things are already in place</h2>
+
+      <p class="section-intro">
+        The local hostname resolves, HTTPS reaches the cluster, and
+        NGINX routes the request here. I used mkcert for the local
+        certificate, so the browser can trust the connection on this
+        machine. That’s the basic plumbing sorted; now I can focus on
+        the apps.
+      </p>
+
+      <dl class="details">
+        <div>
+          <dt>Cluster</dt>
+          <dd>Minikube (Docker driver)</dd>
         </div>
-        <div class="stat-item">
-          <div class="stat-label">Ingress Controller</div>
-          <div class="stat-value">NGINX (Port 443 TLS)</div>
+
+        <div>
+          <dt>Resources</dt>
+          <dd>3 vCPUs · 4 GB RAM</dd>
         </div>
-        <div class="stat-item">
-          <div class="stat-label">TLS Authority</div>
-          <div class="stat-value">mkcert (*.links.test)</div>
+
+        <div>
+          <dt>Traffic</dt>
+          <dd>NGINX Ingress · HTTPS</dd>
         </div>
-        <div class="stat-item">
-          <div class="stat-label">Memory Capped</div>
-          <div class="stat-value">4 GB / 3 vCPUs</div>
+
+        <div>
+          <dt>Local certificate</dt>
+          <dd>mkcert wildcard TLS</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="next-heading">
+      <h2 id="next-heading">What I’m working on next</h2>
+
+      <p class="section-intro">
+        I’m trying to build this in a sensible order instead of
+        installing tools just to have them. First I want deployments
+        coming from Git, then a database, and then an app that ties it
+        together.
+      </p>
+
+      <ol class="next-list">
+        <li>
+          <span class="number">01</span>
+
+          <div>
+            <span class="step-title">Get Argo CD running</span>
+
+            <span class="step-copy">
+              The idea is to keep the desired setup in Git and let
+              Argo CD keep the cluster in sync, rather than applying
+              every change by hand.
+            </span>
+          </div>
+        </li>
+
+        <li>
+          <span class="number">02</span>
+
+          <div>
+            <span class="step-title">
+              Give the apps somewhere to keep data
+            </span>
+
+            <span class="step-copy">
+              I’ll add PostgreSQL with persistent storage, so subsequent
+              services have somewhere reliable to persist relational data.
+            </span>
+          </div>
+        </li>
+
+        <li>
+          <span class="number">03</span>
+
+          <div>
+            <span class="step-title">Deploy the first microservice</span>
+
+            <span class="step-copy">
+              A containerized backend API to practise automated testing,
+              database migrations, health probes, and the full deploy-from-Git workflow.
+            </span>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="look-heading">
+      <h2 id="look-heading">Want to have a look around?</h2>
+
+      <p class="section-intro">
+        These are the commands I usually start with from the
+        terminal when I want to see what’s happening inside the cluster.
+      </p>
+
+      <div class="commands">
+        <div class="command">
+          <p>See what’s running and how it’s exposed.</p>
+          <pre><code>kubectl get pods,svc,ingress -A</code></pre>
+        </div>
+
+        <div class="command">
+          <p>Check the node Minikube is running.</p>
+          <pre><code>kubectl get nodes -o wide</code></pre>
+        </div>
+
+        <div class="command">
+          <p>Take a look at the local TLS secret.</p>
+          <pre><code>kubectl get secret wildcard-links-test-tls -n cert-manager</code></pre>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>🗺️ Learning Journey & Roadmap</h2>
-      <p>Here is how this environment evolves from this initial bootstrap screen into a full GitOps platform:</p>
-      <ul class="roadmap-list">
-        <li class="roadmap-item active">
-          <span class="step-num">Step 1 (Active)</span>
-          <div>
-            <strong>Bootstrap Cluster & TLS Baseline</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Minikube launched, Ingress controller active, wildcard certificates mounted, and verified end-to-end.</span>
-          </div>
-        </li>
-        <li class="roadmap-item upcoming">
-          <span class="step-num">Step 2 (Next)</span>
-          <div>
-            <strong>GitOps Engine (ArgoCD "App of Apps")</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Installing ArgoCD into <code>argocd</code> namespace and pointing root applications to the Git repository.</span>
-          </div>
-        </li>
-        <li class="roadmap-item upcoming">
-          <span class="step-num">Step 3</span>
-          <div>
-            <strong>Stateful Data Layer (PostgreSQL)</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Deploying PostgreSQL StatefulSets with persistent Minikube storage in <code>postgresql</code> namespace.</span>
-          </div>
-        </li>
-        <li class="roadmap-item upcoming">
-          <span class="step-num">Step 4</span>
-          <div>
-            <strong>Python Microservice (URL Shortener)</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Deploying your Clean Architecture API to replace this landing page at <code>links.test</code> with automatic database migrations and health probes.</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>💡 Useful Verification Commands</h2>
-      <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Run these from PowerShell or WSL to inspect what's serving this page:</p>
-      <div class="code-box">
-        kubectl get pods,svc,ingress -n welcome-app
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <footer>
-    GitOps Home Lab • Minikube v1.37.0 • Kubernetes 1.31
+    <div style="color: var(--ink); font-weight: 600;">
+      Built with ❤️ by Vansh Malani.
+    </div>
   </footer>
 </body>
 </html>
