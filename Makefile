@@ -17,6 +17,8 @@ certs: ## Generate wildcard certificates and inject into Kubernetes secrets
 	@./bootstrap/setup-certs.sh
 
 welcome: ## Deploy the onboarding welcome app to https://links.test
+	@kubectl create namespace welcome-app --dry-run=client -o yaml | kubectl apply -f -
+	@kubectl create configmap welcome-html --from-file=index.html=bootstrap/welcome-app/html/index.html -n welcome-app --dry-run=client -o yaml | kubectl apply -f -
 	@kubectl apply -f bootstrap/welcome-app/manifests.yaml
 	@echo "Waiting for welcome-app rollout..."
 	@kubectl rollout status deployment welcome-app -n welcome-app --timeout=60s
