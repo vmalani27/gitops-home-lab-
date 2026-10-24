@@ -42,11 +42,14 @@ fi
 if command -v kubectl &>/dev/null; then
     log_info "Kubectl is already installed: $(kubectl version --client -o yaml | grep gitVersion || true)"
 else
-    log_info "Installing kubectl (latest stable)..."
-    KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
-    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    rm -f kubectl
+    log_info "Installing kubectl from official Kubernetes apt repository..."
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update -y
+    sudo apt-get install -y kubectl
     log_info "kubectl installed: $(kubectl version --client --output=yaml | grep gitVersion || true)"
 fi
 
@@ -55,7 +58,7 @@ if command -v minikube &>/dev/null; then
     log_info "Minikube is already installed: $(minikube version --short)"
 else
     log_info "Installing Minikube..."
-    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    curl -fsSL --retry 3 --retry-delay 2 -o minikube-linux-amd64 https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     sudo install minikube-linux-amd64 /usr/local/bin/minikube
     rm -f minikube-linux-amd64
     log_info "Minikube installed: $(minikube version --short)"
@@ -76,7 +79,7 @@ if command -v mkcert &>/dev/null; then
 else
     log_info "Installing mkcert..."
     MKCERT_VERSION="v1.4.4"
-    curl -Lo mkcert "https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64"
+    curl -fsSL --retry 3 --retry-delay 2 -Lo mkcert "https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64"
     sudo install -m 0755 mkcert /usr/local/bin/mkcert
     rm -f mkcert
     log_info "mkcert installed: $(mkcert -version)"
