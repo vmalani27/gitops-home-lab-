@@ -10,18 +10,16 @@ Local Multi-Service Engineering Lab using GitOps (ArgoCD "App of Apps") on Minik
 ├── bootstrap/                         # Host & cluster initialization scripts
 │   ├── install-prereqs.sh             # Installs docker, minikube, kubectl, helm, mkcert
 │   ├── start-minikube.sh              # Starts minikube with memory/CPU limits & ingress addon
-│   └── setup-certs.sh                 # Generates wildcard *.links.test certs via mkcert
-├── gitops/
-│   ├── root-application.yaml          # ArgoCD Root "App of Apps" manifest
-│   ├── infrastructure/                # Platform tooling (Waves 0-1)
-│   │   ├── namespaces/                # Wave 0: Namespaces
-│   │   ├── ingress-nginx/             # Wave 1: Ingress controller
-│   │   ├── certificates/              # Wave 1: Wildcard TLS Secret
-│   │   └── argocd/                    # ArgoCD self-configuration
-│   └── apps/                          # Databases & applications (Waves 2-3)
-│       ├── postgresql/                # Wave 2: PostgreSQL StatefulSet
-│       └── url-shortener/             # Wave 3: URL Shortener microservice
-│           └── chart/                 # Dedicated Helm Chart
+│   ├── setup-certs.sh                 # Generates wildcard *.links.test certs via mkcert
+│   └── wslconfig.example              # Host resource limits template
+└── gitops/
+    ├── root-application.yaml          # ArgoCD Root "App of Apps" manifest
+    └── components/                    # Self-contained components (each in its own namespace)
+        ├── ingress-nginx/             # Ingress Controller (namespace: ingress-nginx)
+        ├── argocd/                    # GitOps Engine & self-config (namespace: argocd)
+        ├── postgresql/                # PostgreSQL Database StatefulSet (namespace: postgresql)
+        └── url-shortener/             # URL Shortener Microservice (namespace: url-shortener)
+            └── chart/                 # Dedicated Helm Chart
 ```
 
 ## Branching Strategy: Feature Flow
