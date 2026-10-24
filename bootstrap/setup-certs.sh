@@ -19,9 +19,9 @@ log_info "Generating wildcard certificate for *.links.test and links.test..."
 mkcert -cert-file "${CERT_DIR}/tls.crt" -key-file "${CERT_DIR}/tls.key" "*.links.test" "links.test" "api.links.test" "argo.links.test"
 
 # Ensure target namespaces exist
-log_info "Ensuring namespaces 'infra' and 'apps' exist..."
+log_info "Ensuring namespaces 'infra' and 'url-shortener' exist..."
 kubectl create namespace infra --dry-run=client -o yaml | kubectl apply -f -
-kubectl create namespace apps --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace url-shortener --dry-run=client -o yaml | kubectl apply -f -
 
 # Create or replace secret in infra namespace
 log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace 'infra'..."
@@ -31,12 +31,12 @@ kubectl create secret tls wildcard-links-test-tls \
   --namespace=infra \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Create or replace secret in apps namespace
-log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace 'apps'..."
+# Create or replace secret in url-shortener namespace
+log_info "Applying TLS secret 'wildcard-links-test-tls' to namespace 'url-shortener'..."
 kubectl create secret tls wildcard-links-test-tls \
   --cert="${CERT_DIR}/tls.crt" \
   --key="${CERT_DIR}/tls.key" \
-  --namespace=apps \
+  --namespace=url-shortener \
   --dry-run=client -o yaml | kubectl apply -f -
 
-log_info "Wildcard TLS certificates successfully provisioned into 'infra' and 'apps' namespaces."
+log_info "Wildcard TLS certificates successfully provisioned into 'infra' and 'url-shortener' namespaces."
