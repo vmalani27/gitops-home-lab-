@@ -21,6 +21,11 @@ status: ## Show Minikube and pod status
 	@kubectl get nodes -o wide || true
 	@kubectl get pods -A || true
 
+sync-kubeconfig: ## Export flattened kubeconfig from WSL2 to Windows host (%USERPROFILE%\.kube\config)
+	@mkdir -p /mnt/c/Users/$$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')/.kube
+	@kubectl config view --minify --flatten > /mnt/c/Users/$$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')/.kube/config
+	@echo "Kubeconfig successfully synced to Windows host (%USERPROFILE%\.kube\config)"
+
 stop: ## Stop Minikube cluster
 	@minikube stop
 
