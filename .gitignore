@@ -50,3 +50,8 @@ wheels/
 
 # Minikube / Local cluster state
 .minikube/
+
+# Media & Screenshots
+*.png
+*.jpeg
+*.jpg

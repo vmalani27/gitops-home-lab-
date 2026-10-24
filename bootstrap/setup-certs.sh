@@ -34,3 +34,23 @@ for ns in "${NAMESPACES_WITH_CERTS[@]}"; do
 done
 
 log_info "Wildcard TLS certificates successfully provisioned into: ${NAMESPACES_WITH_CERTS[*]}."
+
+# If running inside WSL with Windows host interop, automatically import public root CA into Windows Root trust store
+if grep -qi "microsoft" /proc/version 2>/dev/null && command -v cmd.exe &>/dev/null; then
+    WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+    if [ -n "${WIN_USER}" ] && [ -d "/mnt/c/Users/${WIN_USER}" ]; then
+        log_info "WSL environment detected. Syncing public root CA to Windows host trust store..."
+        CA_PATH="$(mkcert -CAROOT)/rootCA.pem"
+        WIN_DEST="/mnt/c/Users/${WIN_USER}/.kube/rootCA.pem"
+
+        mkdir -p "/mnt/c/Users/${WIN_USER}/.kube"
+        cp -f "${CA_PATH}" "${WIN_DEST}"
+
+        if command -v certutil.exe &>/dev/null; then
+            certutil.exe -user -addstore -f Root "C:\\Users\\${WIN_USER}\\.kube\\rootCA.pem" >/dev/null 2>&1 || true
+            log_info "Public root CA successfully added to Windows User Root certificate store."
+        else
+            log_warn "certutil.exe not reachable. Manually import: C:\\Users\\${WIN_USER}\\.kube\\rootCA.pem into Windows Root store."
+        fi
+    fi
+fi
