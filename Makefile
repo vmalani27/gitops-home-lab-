@@ -12,6 +12,19 @@ start: ## Start Minikube cluster with tuned specs and ingress addon
 	@chmod +x bootstrap/*.sh
 	@./bootstrap/start-minikube.sh
 
+bootstrap: prereqs start certs welcome sync-kubeconfig ## One-command full setup: install tools, boot cluster, inject certs, deploy welcome app
+	@echo ""
+	@echo "================================================================="
+	@echo "Bootstrap complete!"
+	@echo "Add the following line to your hosts file if not already present:"
+	@echo "127.0.0.1  links.test"
+	@echo ""
+	@echo "To forward ingress traffic on Windows / WSL2, run in a terminal:"
+	@echo "make ingress-forward   (or: minikube tunnel)"
+	@echo ""
+	@echo "Then visit: https://links.test"
+	@echo "================================================================="
+
 certs: ## Generate wildcard certificates and inject into Kubernetes secrets
 	@chmod +x bootstrap/*.sh
 	@./bootstrap/setup-certs.sh
