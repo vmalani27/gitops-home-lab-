@@ -1,0 +1,336 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: welcome-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: welcome-html
+  namespace: welcome-app
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Local DevOps Engineering Lab</title>
+      <style>
+        :root {
+          --bg: #0b0f19;
+          --card-bg: rgba(26, 34, 53, 0.7);
+          --border: #233554;
+          --accent: #38bdf8;
+          --accent-glow: rgba(56, 189, 248, 0.25);
+          --text: #f1f5f9;
+          --text-muted: #94a3b8;
+          --green: #4ade80;
+          --purple: #c084fc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          background-color: var(--bg);
+          color: var(--text);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2.5rem 1rem;
+          line-height: 1.6;
+        }
+        .header {
+          text-align: center;
+          max-width: 780px;
+          margin-bottom: 2.5rem;
+        }
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 12px;
+          border-radius: 9999px;
+          background: rgba(74, 222, 128, 0.1);
+          color: var(--green);
+          font-size: 0.85rem;
+          font-weight: 600;
+          border: 1px solid rgba(74, 222, 128, 0.3);
+          margin-bottom: 1rem;
+        }
+        .pulse {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: var(--green);
+          box-shadow: 0 0 10px var(--green);
+        }
+        h1 {
+          font-size: 2.25rem;
+          font-weight: 800;
+          letter-spacing: -0.025em;
+          margin-bottom: 0.75rem;
+          background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+          color: var(--text-muted);
+          font-size: 1.1rem;
+        }
+        .container {
+          max-width: 900px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .card {
+          background: var(--card-bg);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 1.75rem;
+          backdrop-filter: blur(8px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .card h2 {
+          font-size: 1.25rem;
+          color: var(--accent);
+          margin-bottom: 0.75rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+        .stat-item {
+          background: rgba(15, 23, 42, 0.6);
+          border: 1px solid var(--border);
+          padding: 1rem;
+          border-radius: 8px;
+        }
+        .stat-label {
+          font-size: 0.8rem;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .stat-value {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--text);
+          margin-top: 0.25rem;
+        }
+        .roadmap-list {
+          list-style: none;
+          margin-top: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+        .roadmap-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 0.75rem;
+          background: rgba(15, 23, 42, 0.4);
+          border-radius: 8px;
+          border-left: 3px solid var(--border);
+        }
+        .roadmap-item.active {
+          border-left-color: var(--green);
+        }
+        .roadmap-item.upcoming {
+          border-left-color: var(--purple);
+        }
+        .step-num {
+          background: #1e293b;
+          color: var(--accent);
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+        .code-box {
+          background: #070a12;
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 0.75rem 1rem;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-size: 0.9rem;
+          color: #38bdf8;
+          overflow-x: auto;
+        }
+        footer {
+          margin-top: 3rem;
+          text-align: center;
+          font-size: 0.85rem;
+          color: var(--text-muted);
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="badge">
+          <div class="pulse"></div>
+          Cluster Online & Secure
+        </div>
+        <h1>Welcome to Your Local DevOps Engineering Lab</h1>
+        <p class="subtitle">A hardened local Kubernetes playground powered by Minikube, Ingress-NGINX, and mkcert wildcard TLS.</p>
+      </div>
+
+      <div class="container">
+        <div class="card">
+          <h2>🎯 What is this Cluster?</h2>
+          <p>
+            You are currently accessing this cluster securely over HTTPS at <strong>https://links.test</strong>.
+            This lab is structured to replicate production cloud workflows inside your local machine using strict resource constraints, trusted TLS certificates, and a GitOps-first pattern.
+          </p>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-label">Host Target</div>
+              <div class="stat-value">Windows 11 + WSL2</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Ingress Controller</div>
+              <div class="stat-value">NGINX (Port 443 TLS)</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">TLS Authority</div>
+              <div class="stat-value">mkcert (*.links.test)</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Memory Capped</div>
+              <div class="stat-value">4 GB / 3 vCPUs</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🗺️ Learning Journey & Roadmap</h2>
+          <p>Here is how this environment evolves from this initial bootstrap screen into a full GitOps platform:</p>
+          <ul class="roadmap-list">
+            <li class="roadmap-item active">
+              <span class="step-num">Step 1 (Active)</span>
+              <div>
+                <strong>Bootstrap Cluster & TLS Baseline</strong><br>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Minikube launched, Ingress controller active, wildcard certificates mounted, and verified end-to-end.</span>
+              </div>
+            </li>
+            <li class="roadmap-item upcoming">
+              <span class="step-num">Step 2 (Next)</span>
+              <div>
+                <strong>GitOps Engine (ArgoCD "App of Apps")</strong><br>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Installing ArgoCD into <code>argocd</code> namespace and pointing root applications to the Git repository.</span>
+              </div>
+            </li>
+            <li class="roadmap-item upcoming">
+              <span class="step-num">Step 3</span>
+              <div>
+                <strong>Stateful Data Layer (PostgreSQL)</strong><br>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Deploying PostgreSQL StatefulSets with persistent Minikube storage in <code>postgresql</code> namespace.</span>
+              </div>
+            </li>
+            <li class="roadmap-item upcoming">
+              <span class="step-num">Step 4</span>
+              <div>
+                <strong>Python Microservice (URL Shortener)</strong><br>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Deploying your Clean Architecture API to replace this landing page at <code>links.test</code> with automatic database migrations and health probes.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>💡 Useful Verification Commands</h2>
+          <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Run these from PowerShell or WSL to inspect what's serving this page:</p>
+          <div class="code-box">
+            kubectl get pods,svc,ingress -n welcome-app
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        GitOps Home Lab • Minikube v1.37.0 • Kubernetes 1.31
+      </footer>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: welcome-app
+  namespace: welcome-app
+  labels:
+    app: welcome-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: welcome-app
+  template:
+    metadata:
+      labels:
+        app: welcome-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            cpu: 20m
+            memory: 32Mi
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: welcome-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: welcome-app-svc
+  namespace: welcome-app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: welcome-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: welcome-app-ingress
+  namespace: welcome-app
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - links.test
+    secretName: wildcard-links-test-tls
+  rules:
+  - host: links.test
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: welcome-app-svc
+            port:
+              number: 80

@@ -16,6 +16,15 @@ certs: ## Generate wildcard certificates and inject into Kubernetes secrets
 	@chmod +x bootstrap/*.sh
 	@./bootstrap/setup-certs.sh
 
+welcome: ## Deploy the onboarding welcome app to https://links.test
+	@kubectl apply -f bootstrap/welcome-app/manifests.yaml
+	@echo "Waiting for welcome-app rollout..."
+	@kubectl rollout status deployment welcome-app -n welcome-app --timeout=60s
+	@echo "Welcome app is live at https://links.test"
+
+clean-welcome: ## Delete the temporary welcome app and its namespace
+	@kubectl delete -f bootstrap/welcome-app/manifests.yaml --ignore-not-found=true
+
 status: ## Show Minikube and pod status
 	@minikube status || true
 	@kubectl get nodes -o wide || true
