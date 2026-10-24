@@ -28,9 +28,9 @@ clean-welcome: ## Delete the temporary welcome app and its namespace
 tunnel: ## Start minikube tunnel (requires sudo; binds ingress/loadbalancers to localhost)
 	@minikube tunnel
 
-ingress-forward: ## Forward ingress controller to localhost (80 & 443) for Windows host access without sudo
+ingress-forward: ## Forward ingress controller to localhost (80 & 443) for Windows host access
 	@echo "Forwarding Ingress Controller to localhost:80 and localhost:443..."
-	@sudo kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 443:443 --address 0.0.0.0
+	@sudo KUBECONFIG=$$HOME/.kube/config kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 443:443 --address 0.0.0.0
 
 status: ## Show Minikube and pod status
 	@minikube status || true
