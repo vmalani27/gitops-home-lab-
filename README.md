@@ -33,7 +33,7 @@ make bootstrap
 This single command:
 1. Installs missing prerequisites (`docker`, `minikube`, `kubectl`, `helm`, `mkcert`).
 2. Starts Minikube with tuned resource caps (3 vCPUs, 4096 MB RAM, Docker driver) and enables the `ingress` and `storage-provisioner` addons.
-3. Generates trusted local wildcard certificates via `mkcert` and injects them into the `cert-manager` and `welcome-app` namespaces.
+3. Generates trusted local wildcard certificates via `mkcert`, injects them into Kubernetes (`cert-manager`, `welcome-app`), and automatically imports the public CA (`rootCA.pem`) into the Windows Host Root Certificate Store via `certutil.exe`.
 4. Deploys the onboarding welcome application.
 5. Syncs the cluster `kubeconfig` to your Windows host profile (`%USERPROFILE%\.kube\config`) so tools like VS Code, k9s, and Lens work out of the box.
 
