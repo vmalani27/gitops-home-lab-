@@ -19,7 +19,7 @@ log_info "Generating wildcard certificate for *.links.test and links.test..."
 mkcert -cert-file "${CERT_DIR}/tls.crt" -key-file "${CERT_DIR}/tls.key" "*.links.test" "links.test" "api.links.test" "argo.links.test"
 
 # Namespaces receiving initial certificates
-NAMESPACES_WITH_CERTS=("cert-manager" "welcome-app")
+NAMESPACES_WITH_CERTS=("cert-manager" "welcome-app" "argocd")
 
 for ns in "${NAMESPACES_WITH_CERTS[@]}"; do
     log_info "Ensuring namespace '${ns}' exists..."

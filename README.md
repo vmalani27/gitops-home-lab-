@@ -47,7 +47,7 @@ To allow your browser to resolve the local cluster ingress, add this line to you
 * **Linux / WSL2**: `/etc/hosts`
 
 ```text
-127.0.0.1  links.test
+127.0.0.1  links.test argo.links.test
 ```
 
 ---
@@ -96,6 +96,9 @@ You will see the welcome dashboard with a green, trusted HTTPS padlock (signed b
 | Command | Purpose |
 |---|---|
 | `make bootstrap` | Full end-to-end setup (prereqs, minikube, certs, welcome app). |
+| `make install-argocd` | Installs ArgoCD v2.13.3 with Ingress and waits for rollout. |
+| `make argocd-pass` | Prints the initial admin password for ArgoCD. |
+| `make apply-root-app` | Applies the root "App of Apps" manifest to ArgoCD. |
 | `make ingress-forward` | Bridge ingress traffic to `localhost:80` and `localhost:443`. |
 | `make status` | Inspect Minikube health, nodes, and running pods. |
 | `make sync-kubeconfig` | Re-sync flattened cluster credentials to `%USERPROFILE%\.kube\config`. |

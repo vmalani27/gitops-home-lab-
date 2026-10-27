@@ -40,6 +40,25 @@ welcome: ## Deploy the onboarding welcome app to https://links.test
 clean-welcome: ## Delete the temporary welcome app and its namespace
 	@kubectl delete -f bootstrap/welcome-app/manifests.yaml --ignore-not-found=true
 
+install-argocd: ## Install ArgoCD with Ingress and wait for rollout
+	@kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+	@./bootstrap/setup-certs.sh
+	@kubectl apply -k gitops/components/argocd
+	@echo "Waiting for argocd-server rollout..."
+	@kubectl rollout status deployment argocd-server -n argocd --timeout=300s
+	@echo ""
+	@echo "ArgoCD is available at https://argo.links.test"
+	@echo "Run 'make argocd-pass' to retrieve the initial admin password."
+
+argocd-pass: ## Retrieve the initial admin password for ArgoCD
+	@echo -n "Username: admin\nPassword: "
+	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d || echo "Password secret not found (may have been deleted or changed)"
+	@echo ""
+
+apply-root-app: ## Apply the ArgoCD root App of Apps manifest
+	@kubectl apply -f gitops/root-application.yaml
+	@echo "Root Application applied. ArgoCD is now managing gitops/components."
+
 tunnel: ## Start minikube tunnel (requires sudo; binds ingress/loadbalancers to localhost)
 	@minikube tunnel
 
