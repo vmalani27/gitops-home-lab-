@@ -47,7 +47,7 @@ To allow your browser to resolve the local cluster ingress, add this line to you
 * **Linux / WSL2**: `/etc/hosts`
 
 ```text
-127.0.0.1  links.test argo.links.test
+127.0.0.1  links.test argo.links.test demo.links.test
 ```
 
 ---
@@ -85,6 +85,7 @@ You will see the welcome dashboard with a green, trusted HTTPS padlock (signed b
     └── components/                    # Self-contained components (1 component = 1 namespace)
         ├── ingress-nginx/             # Ingress Controller
         ├── argocd/                    # GitOps Engine & self-config
+        ├── demo-app/                  # Demo Apache HTTPD service
         ├── postgresql/                # PostgreSQL Database StatefulSet
         └── url-shortener/             # First microservice Helm chart
 ```

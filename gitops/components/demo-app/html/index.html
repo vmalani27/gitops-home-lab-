@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Demo Service · Local Lab</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f7f7f3;
+      --paper: #fffefa;
+      --ink: #252821;
+      --muted: #666b61;
+      --line: #dedfd6;
+      --accent: #446d55;
+      --code-bg: #eeefe8;
+      --width: 780px;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--page); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-underline-offset: 3px;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 254, 250, .72);
+    }
+
+    .topbar-inner,
+    main,
+    footer {
+      width: min(var(--width), calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .topbar-inner {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .wordmark {
+      font-weight: 650;
+      letter-spacing: -.02em;
+    }
+
+    .status-badge {
+      font-size: .82rem;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: #eef5f0;
+      color: var(--accent);
+      border: 1px solid #d4e5d9;
+      font-weight: 600;
+    }
+
+    main {
+      padding: 62px 0 12px;
+    }
+
+    .intro {
+      max-width: 690px;
+    }
+
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--accent);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .025em;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      max-width: 650px;
+      margin-bottom: 18px;
+      font-size: clamp(2.25rem, 6vw, 3.15rem);
+      line-height: 1.12;
+      letter-spacing: -.055em;
+      font-weight: 620;
+    }
+
+    .lead {
+      max-width: 660px;
+      margin-bottom: 14px;
+      color: #454a42;
+      font-size: 1.08rem;
+      line-height: 1.8;
+    }
+
+    section {
+      margin-top: 43px;
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
+    }
+
+    h2 {
+      margin-bottom: 9px;
+      font-size: 1.14rem;
+      font-weight: 650;
+      letter-spacing: -.02em;
+    }
+
+    .section-intro {
+      max-width: 670px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 34px;
+      margin: 22px 0 0;
+    }
+
+    dt {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    dd {
+      margin: 0;
+      font-weight: 520;
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .88em;
+    }
+
+    p code, dd code {
+      padding: .13em .35em;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+
+    .commands {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .command {
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .command p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: .91rem;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      color: var(--ink);
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding: 18px 0 30px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    @media (max-width: 560px) {
+      .details { grid-template-columns: 1fr; gap: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="wordmark">Demo Service</span>
+      <span class="status-badge">HTTP · Port 80</span>
+    </div>
+  </div>
+
+  <main>
+    <header class="intro">
+      <p class="eyebrow">Cluster Deployment Proof</p>
+      <h1>A standalone service running in its own namespace.</h1>
+      <p class="lead">
+        This service proves that the cluster can provision an isolated
+        workload using standard Kubernetes manifests. It runs Apache HTTPD
+        inside the <code>demo-app</code> namespace and receives traffic routed
+        through the central Ingress controller.
+      </p>
+    </header>
+
+    <section aria-labelledby="manifests-heading">
+      <h2 id="manifests-heading">How this service is wired up</h2>
+      <p class="section-intro">
+        Everything serving this page was created with four declarative objects:
+        a dedicated Namespace, a Deployment running <code>httpd:alpine</code>,
+        a ClusterIP Service, and an Ingress rule on <code>demo.links.test</code>.
+      </p>
+
+      <dl class="details">
+        <div>
+          <dt>Namespace</dt>
+          <dd><code>demo-app</code></dd>
+        </div>
+
+        <div>
+          <dt>Workload Container</dt>
+          <dd>Apache (<code>httpd:alpine</code>)</dd>
+        </div>
+
+        <div>
+          <dt>Internal Service</dt>
+          <dd><code>demo-app-svc:80</code> (ClusterIP)</dd>
+        </div>
+
+        <div>
+          <dt>Hostname & Protocol</dt>
+          <dd><code>http://demo.links.test</code></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="inspect-heading">
+      <h2 id="inspect-heading">Inspect the deployment</h2>
+      <p class="section-intro">
+        You can check the resources backing this page directly from your terminal:
+      </p>
+
+      <div class="commands">
+        <div class="command">
+          <p>List all resources in the demo-app namespace.</p>
+          <pre><code>kubectl get all,ingress -n demo-app</code></pre>
+        </div>
+
+        <div class="command">
+          <p>View the ingress routing rule.</p>
+          <pre><code>kubectl describe ingress demo-app-ingress -n demo-app</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div style="color: var(--ink); font-weight: 600;">
+      Built with ❤️ by Vansh Malani.
+    </div>
+  </footer>
+</body>
+</html>
