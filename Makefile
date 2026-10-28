@@ -43,7 +43,8 @@ clean-welcome: ## Delete the temporary welcome app and its namespace
 install-argocd: ## Install ArgoCD with Ingress and wait for rollout
 	@kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 	@./bootstrap/setup-certs.sh
-	@kubectl apply -k gitops/components/argocd
+	@kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.3/manifests/install.yaml
+	@kubectl patch deployment argocd-server -n argocd --type=json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]' || true
 	@echo "Waiting for argocd-server rollout..."
 	@kubectl rollout status deployment argocd-server -n argocd --timeout=300s
 	@echo ""
@@ -55,9 +56,9 @@ argocd-pass: ## Retrieve the initial admin password for ArgoCD
 	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d || echo "Password secret not found (may have been deleted or changed)"
 	@echo ""
 
-apply-root-app: ## Apply the ArgoCD root App of Apps manifest
-	@kubectl apply -f gitops/root-application.yaml
-	@echo "Root Application applied. ArgoCD is now managing gitops/components."
+apply-root-app: ## Apply the ArgoCD root App of Apps manifest from home-lab-gitops repo
+	@kubectl apply -f https://raw.githubusercontent.com/vmalani27/home-lab-gitops/main/root-application.yaml || kubectl apply -f ../home-lab-gitops/root-application.yaml
+	@echo "Root Application applied. ArgoCD is now tracking home-lab-gitops."
 
 tunnel: ## Start minikube tunnel (requires sudo; binds ingress/loadbalancers to localhost)
 	@minikube tunnel

@@ -70,24 +70,19 @@ You will see the welcome dashboard with a green, trusted HTTPS padlock (signed b
 
 ## Repository Structure
 
+This repository is dedicated strictly to **cluster lifecycle and bootstrap automation**. All declarative applications, database workloads, and service manifests are managed in the companion GitOps repository: **[`home-lab-gitops`](https://github.com/vmalani27/home-lab-gitops)**.
+
 ```text
 .
 ├── Makefile                           # Unified cluster lifecycle and bootstrap commands
-├── bootstrap/                         # Host & cluster initialization scripts
-│   ├── install-prereqs.sh             # Idempotent installer for docker, minikube, kubectl, helm, mkcert
-│   ├── start-minikube.sh              # Boots minikube with memory/CPU limits & ingress addon
-│   ├── setup-certs.sh                 # Generates wildcard *.links.test certs via mkcert
-│   ├── wslconfig.example              # Host resource limits template
-│   └── welcome-app/                   # Onboarding landing page deployed to https://links.test
-│       ├── html/index.html            # Standalone editorial notebook UI
-│       └── manifests.yaml             # Deployment, Service, Ingress manifests
-└── gitops/
-    └── components/                    # Self-contained components (1 component = 1 namespace)
-        ├── ingress-nginx/             # Ingress Controller
-        ├── argocd/                    # GitOps Engine & self-config
-        ├── demo-app/                  # Demo Apache HTTPD service
-        ├── postgresql/                # PostgreSQL Database StatefulSet
-        └── url-shortener/             # First microservice Helm chart
+└── bootstrap/                         # Host & cluster initialization scripts
+    ├── install-prereqs.sh             # Idempotent installer for docker, minikube, kubectl, helm, mkcert
+    ├── start-minikube.sh              # Boots minikube with memory/CPU limits & ingress addon
+    ├── setup-certs.sh                 # Generates wildcard *.links.test certs via mkcert
+    ├── wslconfig.example              # Host resource limits template
+    └── welcome-app/                   # Onboarding landing page deployed to https://links.test
+        ├── html/index.html            # Standalone editorial notebook UI
+        └── manifests.yaml             # Deployment, Service, Ingress manifests
 ```
 
 ---
