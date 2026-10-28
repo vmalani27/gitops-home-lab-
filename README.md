@@ -70,7 +70,7 @@ You will see the welcome dashboard with a green, trusted HTTPS padlock (signed b
 
 ## Repository Structure
 
-This repository is dedicated strictly to **cluster lifecycle and bootstrap automation**. All declarative applications, database workloads, and service manifests are managed in the companion GitOps repository: **[`home-lab-gitops`](https://github.com/vmalani27/home-lab-gitops)**.
+This repository is dedicated strictly to **cluster lifecycle and bootstrap automation**. All declarative applications, database workloads, and service manifests are managed in the companion GitOps repository: **[`gitops-repo-apps`](https://github.com/vmalani27/gitops-repo-apps)**.
 
 ```text
 .

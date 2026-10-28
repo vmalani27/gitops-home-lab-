@@ -56,9 +56,9 @@ argocd-pass: ## Retrieve the initial admin password for ArgoCD
 	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d || echo "Password secret not found (may have been deleted or changed)"
 	@echo ""
 
-apply-root-app: ## Apply the ArgoCD root App of Apps manifest from home-lab-gitops repo
-	@kubectl apply -f https://raw.githubusercontent.com/vmalani27/home-lab-gitops/main/root-application.yaml || kubectl apply -f ../home-lab-gitops/root-application.yaml
-	@echo "Root Application applied. ArgoCD is now tracking home-lab-gitops."
+apply-root-app: ## Apply the ArgoCD root App of Apps manifest from gitops-repo-apps repo
+	@kubectl apply -f https://raw.githubusercontent.com/vmalani27/gitops-repo-apps/main/root-application.yaml || kubectl apply -f ../home-lab-gitops/root-application.yaml
+	@echo "Root Application applied. ArgoCD is now tracking gitops-repo-apps."
 
 tunnel: ## Start minikube tunnel (requires sudo; binds ingress/loadbalancers to localhost)
 	@minikube tunnel
