@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Colors for log output
+# Parse arguments
+TOOLS_ONLY=false
+for arg in "$@"; do
+    case "$arg" in
+        --tools-only) TOOLS_ONLY=true ;;
+    esac
+done
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -16,29 +23,33 @@ log_info "Updating package lists and installing base tools..."
 sudo apt-get update -y
 sudo apt-get install -y curl wget apt-transport-https ca-certificates gnupg lsb-release libnss3-tools make
 
-# 2. Docker verification / installation
-if command -v docker &>/dev/null; then
-    log_info "Docker is already installed: $(docker --version)"
+# 2. Docker verification / installation (Skipped if --tools-only)
+if [ "$TOOLS_ONLY" = true ]; then
+    log_info "Skipping Docker and Minikube installation (--tools-only mode enabled)."
 else
-    log_info "Installing Docker Engine..."
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
-    echo \
-      "deb [arch=\"$(dpkg --print-architecture)\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update -y
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    if command -v docker &>/dev/null; then
+        log_info "Docker is already installed: $(docker --version)"
+    else
+        log_info "Installing Docker Engine..."
+        sudo install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        sudo chmod a+r /etc/apt/keyrings/docker.gpg
+        echo \
+          "deb [arch=\"$(dpkg --print-architecture)\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update -y
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    fi
+
+    # Ensure user is in docker group
+    if ! groups "$USER" | grep -q '\bdocker\b'; then
+        log_info "Adding $USER to docker group..."
+        sudo usermod -aG docker "$USER"
+        log_warn "User added to docker group. You may need to run 'newgrp docker' or re-login to apply group changes."
+    fi
 fi
 
-# Ensure user is in docker group
-if ! groups "$USER" | grep -q '\bdocker\b'; then
-    log_info "Adding $USER to docker group..."
-    sudo usermod -aG docker "$USER"
-    log_warn "User added to docker group. You may need to run 'newgrp docker' or re-login to apply group changes."
-fi
-
-# 3. Kubectl
+# 3. Kubectl (Client tool)
 if command -v kubectl &>/dev/null; then
     log_info "Kubectl is already installed: $(kubectl version --client -o yaml | grep gitVersion || true)"
 else
@@ -53,18 +64,20 @@ else
     log_info "kubectl installed: $(kubectl version --client --output=yaml | grep gitVersion || true)"
 fi
 
-# 4. Minikube
-if command -v minikube &>/dev/null; then
-    log_info "Minikube is already installed: $(minikube version --short)"
-else
-    log_info "Installing Minikube..."
-    curl -fsSL --retry 3 --retry-delay 2 -o minikube-linux-amd64 https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-    rm -f minikube-linux-amd64
-    log_info "Minikube installed: $(minikube version --short)"
+# 4. Minikube (Skipped if --tools-only)
+if [ "$TOOLS_ONLY" = false ]; then
+    if command -v minikube &>/dev/null; then
+        log_info "Minikube is already installed: $(minikube version --short)"
+    else
+        log_info "Installing Minikube..."
+        curl -fsSL --retry 3 --retry-delay 2 -o minikube-linux-amd64 https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        sudo install minikube-linux-amd64 /usr/local/bin/minikube
+        rm -f minikube-linux-amd64
+        log_info "Minikube installed: $(minikube version --short)"
+    fi
 fi
 
-# 5. Helm
+# 5. Helm (Client tool)
 if command -v helm &>/dev/null; then
     log_info "Helm is already installed: $(helm version --short)"
 else
@@ -73,7 +86,7 @@ else
     log_info "Helm installed: $(helm version --short)"
 fi
 
-# 6. mkcert
+# 6. mkcert (Client tool for local TLS)
 if command -v mkcert &>/dev/null; then
     log_info "mkcert is already installed: $(mkcert -version)"
 else
@@ -85,4 +98,4 @@ else
     log_info "mkcert installed: $(mkcert -version)"
 fi
 
-log_info "All prerequisites are satisfied!"
+log_info "Installation completed successfully!"
